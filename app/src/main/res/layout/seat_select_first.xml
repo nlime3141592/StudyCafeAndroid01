@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ScrollView
+        android:id="@+id/fixedContainer"
+        android:layout_width="410dp"
+        android:layout_height="340dp">
+
+        <LinearLayout
+            android:id="@+id/recordsContainer1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:layout_marginTop="-200dp"
+        android:layout_marginBottom="140dp"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:padding="16dp"/>
+
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="12sp"
+
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:padding="16dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+
+
+        <customfonts.MyTextView_Poppins_Medium
+            android:id="@+id/btnCancel"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/blue_box"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginLeft="45dp"
+            android:textColor="#ffffff"
+            android:text="취소" />
+
+        <customfonts.MyTextView_Poppins_Medium
+            android:id="@+id/btnOk"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/blue_box"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginLeft="50dp"
+            android:text="예약하기"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="study.customer.gui.HomeFragment"
+    android:overScrollMode="never">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--상단로고만들기-->
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:background="@drawable/logo" />
+
+        <TextView
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="-15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="StudyCafe"
+            android:textSize="10sp"
+            android:layout_gravity="center"
+            android:padding="16dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B3B3B3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="좌석 선택"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:padding="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="날짜들어올 텍스트박스"/>
+
+        <TextView
+            android:id="@+id/textOnair"
+            android:textColor="#FF0000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""/>
+
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:layerType="software">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="50dp"
+                    android:columnCount="1"
+                    android:rowCount="5">
+
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_1"
+                        style="@style/SeatButton"
+                        android:text="1" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_2"
+                        style="@style/SeatButton"
+                        android:text="2" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_3"
+                        style="@style/SeatButton"
+                        android:text="3" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_4"
+                        style="@style/SeatButton"
+                        android:text="4" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_5"
+                        style="@style/SeatButton"
+                        android:text="5" />
+                </GridLayout>
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="50dp"
+                    android:columnCount="2"
+                    android:rowCount="10">
+
+                    <!-- 좌석 A1 ~ A10 -->
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_6"
+                        style="@style/SeatButton"
+                        android:text="6" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_7"
+                        style="@style/SeatButton"
+                        android:text="7" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_8"
+                        style="@style/SeatButton"
+                        android:text="8" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_9"
+                        style="@style/SeatButton"
+                        android:text="9" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_10"
+                        style="@style/SeatButton"
+                        android:text="10" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_11"
+                        style="@style/SeatButton"
+                        android:text="11" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_12"
+                        style="@style/SeatButton"
+                        android:text="12" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_13"
+                        style="@style/SeatButton"
+                        android:text="13" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_14"
+                        style="@style/SeatButton"
+                        android:text="14" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_15"
+                        style="@style/SeatButton"
+                        android:text="15" />
+                </GridLayout>
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="50dp"
+                    android:columnCount="2"
+                    android:rowCount="10">
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_16"
+                        style="@style/SeatButton"
+                        android:text="16" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_17"
+                        style="@style/SeatButton"
+                        android:text="17" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_18"
+                        style="@style/SeatButton"
+                        android:text="18" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_19"
+                        style="@style/SeatButton"
+                        android:text="19" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_20"
+                        style="@style/SeatButton"
+                        android:text="20" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_21"
+                        style="@style/SeatButton"
+                        android:text="21" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_22"
+                        style="@style/SeatButton"
+                        android:text="22" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_23"
+                        style="@style/SeatButton"
+                        android:text="23" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_24"
+                        style="@style/SeatButton"
+                        android:text="24" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_25"
+                        style="@style/SeatButton"
+                        android:text="25" />
+                </GridLayout>
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="12dp"
+                    android:columnCount="2"
+                    android:rowCount="10">
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_26"
+                        style="@style/SeatButton"
+                        android:text="26" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_27"
+                        style="@style/SeatButton"
+                        android:text="27" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_28"
+                        style="@style/SeatButton"
+                        android:text="28" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_29"
+                        style="@style/SeatButton"
+                        android:text="29" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_30"
+                        style="@style/SeatButton"
+                        android:text="30" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_31"
+                        style="@style/SeatButton"
+                        android:text="31" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_32"
+                        style="@style/SeatButton"
+                        android:text="32" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_33"
+                        style="@style/SeatButton"
+                        android:text="33" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_34"
+                        style="@style/SeatButton"
+                        android:text="34" />
+
+                    <customfonts.MyTextView_Poppins_Medium
+                        android:id="@+id/seat_35"
+                        style="@style/SeatButton"
+                        android:text="35" />
+                </GridLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <customfonts.MyTextView_Poppins_Medium
+            android:id="@+id/buttonLogin"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="62dp"
+            android:layout_marginTop="18.7dp"
+            android:layout_marginRight="62dp"
+            android:background="@drawable/blue_box"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginBottom="20dp"
+            android:text="날짜 선택"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</LinearLayout>

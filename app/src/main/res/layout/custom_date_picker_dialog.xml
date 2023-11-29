@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- 여기에 다이얼로그에 들어갈 내용을 추가하세요 -->
+    <study.customer.gui.need_home_view.KoreanDatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="-30dp">
+    <customfonts.MyTextView_Poppins_Medium
+        android:id="@+id/buttonCancel"
+        android:layout_width="80dp"
+        android:layout_height="43dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="62dp"
+        android:layout_marginRight="62dp"
+        android:background="@drawable/blue_box"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="14dp"
+        android:text="취소"
+        android:textColor="#ffffff"
+        android:textSize="15dp" />
+
+    <customfonts.MyTextView_Poppins_Medium
+        android:id="@+id/buttonOk"
+        android:layout_width="80dp"
+        android:layout_height="43dp"
+        android:layout_gravity="center"
+        android:layout_marginRight="62dp"
+        android:background="@drawable/blue_box"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="14dp"
+        android:text="확인"
+        android:textColor="#ffffff"
+        android:textSize="15dp" />
+    </LinearLayout>
+</LinearLayout>

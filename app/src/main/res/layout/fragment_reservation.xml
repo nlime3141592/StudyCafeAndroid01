@@ -1,0 +1,79 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Fixed content at the top -->
+    <LinearLayout
+        android:id="@+id/fixedContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <!-- 상단 로고 -->
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:background="@drawable/logo" />
+
+        <!-- "StudyCafe" 텍스트 -->
+        <TextView
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="-15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="StudyCafe"
+            android:textSize="10sp"
+            android:layout_gravity="center"
+            android:padding="16dp"/>
+
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B3B3B3" />
+
+        <!-- "예약내역" 텍스트 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24dp"
+            android:text="예약내역"
+            android:layout_gravity="center"
+            android:padding="16dp"/>
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#C6C5C5" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_below="@id/fixedContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/recordsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </ScrollView>
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:padding="16dp"/>
+</RelativeLayout>

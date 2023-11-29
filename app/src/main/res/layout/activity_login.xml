@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context="study.customer.gui.LoginActivity"
+    android:windowSoftInputMode="stateVisible|adjustResize">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- FrameLayout -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="273dp"
+            android:background="@drawable/blue_bg">
+
+            <ImageView
+                android:layout_width="157dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/logo" />
+
+        </FrameLayout>
+
+        <!-- RelativeLayout -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="62dp"
+            android:layout_marginRight="62dp"
+            android:layout_marginTop="36.7dp"
+            android:background="@drawable/blue_border_rounded_cornwe">
+
+            <!-- INPUT -->
+            <customfonts.EditText_Poppins_Regular
+                android:id="@+id/editTextAccount"
+                android:layout_toRightOf="@+id/username_icon"
+                android:hint="아이디"
+                android:textSize="12sp"
+                android:paddingLeft="17dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:maxLines="1"
+                android:inputType="textEmailAddress"
+                android:textCursorDrawable="@drawable/cursor_color"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- ICON -->
+            <ImageView
+                android:id="@+id/username_icon"
+                android:src="@drawable/email"
+                android:layout_width="14.7dp"
+                android:layout_height="10.3dp"
+                android:layout_marginLeft="17dp"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <!-- RelativeLayout (비밀번호 입력 부분) -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="62dp"
+            android:layout_marginRight="62dp"
+            android:layout_marginTop="12.7dp"
+            android:background="@drawable/blue_border_rounded_cornwe">
+
+            <!-- INPUT -->
+            <customfonts.EditText_Poppins_Regular
+                android:id="@+id/editTextPassword"
+                android:layout_toRightOf="@+id/icon"
+                android:hint="비밀번호"
+                android:textSize="12sp"
+                android:paddingLeft="17dp"
+                android:paddingTop="15dp"
+                android:maxLines="1"
+                android:inputType="textPassword"
+                android:paddingBottom="15dp"
+                android:maxLength="10"
+                android:textCursorDrawable="@drawable/cursor_color"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- ICON -->
+            <ImageView
+                android:id="@+id/icon"
+                android:src="@drawable/password"
+                android:layout_width="14.7dp"
+                android:layout_height="10.3dp"
+                android:layout_marginLeft="17dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+
+        <!-- TextView 및 Button 부분은 여기에 계속 추가하면 됩니다. -->
+        <TextView
+            android:id="@+id/Error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:text=""
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="10sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true" />
+
+
+        <customfonts.MyTextView_Poppins_Medium
+            android:id="@+id/buttonLogin"
+            android:layout_width="284dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="62dp"
+            android:layout_marginTop="18.7dp"
+            android:layout_marginRight="62dp"
+            android:background="@drawable/blue_box"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="로그인"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <customfonts.MyTextView_Poppins_Medium
+            android:id="@+id/buttonSignUp"
+            android:layout_width="284dp"
+            android:layout_height="42dp"
+            android:textSize="18sp"
+            android:textColor="#ffffff"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginLeft="62dp"
+            android:layout_marginRight="62dp"
+            android:layout_marginTop="18.7dp"
+            android:text="회원가입"
+            android:background="@drawable/blue_box"
+            />
+
+        <customfonts.MyTextView_Poppins_Medium
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10.5sp"
+            android:textColor="#1566e0"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center"
+            android:text="비밀번호를 잊어버리셨습니까?"
+            />
+
+
+
+
+        <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="70.7dp"
+                android:orientation="horizontal">
+
+                <customfonts.MyTextView_Poppins_Medium
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13.3sp"
+                    android:textColor="#aeaeae"
+                    android:gravity="center_horizontal"
+                    android:text="─────────── or ───────────"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="95.7dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="26.7dp"
+                    android:layout_height="26.7dp"
+                    android:src="@drawable/fb"/>
+
+                <ImageView
+                    android:layout_width="26.7dp"
+                    android:layout_height="26.7dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/instagram"/>
+
+                <ImageView
+                    android:layout_width="26.7dp"
+                    android:layout_height="26.7dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/twitter"/>
+
+                <ImageView
+                    android:layout_width="26.7dp"
+                    android:layout_height="26.7dp"
+                    android:src="@drawable/linkedin"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+        <!-- 이하 생략 -->
+    </LinearLayout>
+
+</ScrollView>
