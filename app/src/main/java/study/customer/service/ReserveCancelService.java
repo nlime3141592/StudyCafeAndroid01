@@ -21,12 +21,10 @@ public class ReserveCancelService implements INetworkService {
     public boolean tryExecuteService() {
         m_netModule.writeLine("RESERVE_CANCEL_SERVICE");
         m_netModule.writeLine(reserveId);
-        m_netModule.writeLine(NetworkLiteral.EOF);
 
         String response = m_netModule.readLine();
 
         System.out.println(reserveId);
-
 
         Message message = reserveCancelHandler.obtainMessage();
         Bundle bundle = new Bundle();

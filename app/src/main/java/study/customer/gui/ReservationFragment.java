@@ -18,6 +18,7 @@ import study.customer.handler.ReserveSelectHandler;
 
 import com.example.mysecondproject.R;
 
+import study.customer.main.CustomerManager;
 import study.customer.main.NetworkManager;
 import study.customer.service.ReserveCancelService;
 import study.customer.service.ReserveSelectService;
@@ -26,23 +27,20 @@ import java.io.IOError;
 import java.util.ArrayList;
 
 public class ReservationFragment extends Fragment {
-    ReserveCancelHandler reserveCancelHandler;
-    private String reserveId;
-    private ArrayList<String> lines = new ArrayList<>();
+    private ArrayList<String> lines;
     private View view;
-
-    private ArrayList<View> m_records;
+    private ArrayList<ReservationRecord> m_records;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         view = inflater.inflate(R.layout.fragment_reservation, container, false);
+        m_records = new ArrayList<ReservationRecord>();
 
         ReserveSelectHandler reserveSelectHandler;
         reserveSelectHandler = new ReserveSelectHandler(this);
         ReserveSelectService reserveSelectService = new ReserveSelectService(reserveSelectHandler);
-        reserveSelectService.bindNetworkModule(IntroActivity.networkModule);
-        NetworkManager.getManager().requestService(reserveSelectService);
+        CustomerManager.getManager().requestService(reserveSelectService);
 
         return view;
     }
@@ -51,64 +49,32 @@ public class ReservationFragment extends Fragment {
         TextView text = view.findViewById(R.id.text);
         text.setText("등록된 예약내역이 없습니다.");
     }
-    public void updateRecords(ArrayList<String> lines) {
-        lines = this.lines;
-        int c = 1;
-        LinearLayout containerLayout = getView().findViewById(R.id.recordsContainer);
 
+    public void updateRecords(ArrayList<String> lines)
+    {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-            for (int i = 0; i < lines.size(); i += 5) {
-                ReservationRecord record = new ReservationRecord(lines, i);
-                transaction.add(record, "ReservationRecord");
+        for (int i = 0; i < lines.size(); i += 5)
+        {
+            ReservationRecord record = new ReservationRecord(this, lines, i);
+            m_records.add(record);
+            transaction.add(record, "ReservationRecord");
+        }
 
-                reserveCancelHandler = new ReserveCancelHandler(this, containerLayout, recordView);
-                btnDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                        View dialogView = getLayoutInflater().inflate(R.layout.question_mark_dialog, null);
-                        builder.setView(dialogView);
-
-                        customfonts.MyTextView_Poppins_Medium dialogTitle = dialogView.findViewById(R.id.dialog_title);
-                        MyTextView_Poppins_Medium btnNo = dialogView.findViewById(R.id.btnNo);
-                        MyTextView_Poppins_Medium btnYes = dialogView.findViewById(R.id.btnYes);
-
-                        dialogTitle.setText("정말로 삭제하시겠습니까?");
-                        btnNo.setText("아니요");
-                        btnYes.setText("네");
-
-                        AlertDialog dialog = builder.create();
-
-                        btnYes.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                reserveId = String.valueOf(reserveId1.getText());
-
-                                ReserveCancelService reserveCancelService = new ReserveCancelService(reserveCancelHandler, reserveId);
-                                reserveCancelService.bindNetworkModule(NetworkManager.getManager().getNetworkModule());
-                                NetworkManager.getManager().requestService(reserveCancelService);
-
-                                dialog.dismiss();
-                            }
-                        });
-                        btnNo.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                dialog.dismiss();
-                            }
-                        });
-                        dialog.show();
-                    }
-                });
-
-                containerLayout.addView(recordView);
-                c++;
-            }
-
+        transaction.commit();
     }
+
+    public void removeRecord(ReservationRecord _record)
+    {
+        if(!m_records.remove(_record))
+            return;
+
+        _record.removeRecordFromView();
+
+        for(int i = 0; i < m_records.size(); ++i)
+            m_records.get(i).setFragmentId(i + 1);
+    }
+
     public void updateFail() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -167,7 +133,9 @@ public class ReservationFragment extends Fragment {
 
         slideAnimator.start();
     }
-    public void setLines(ArrayList<String> lines) {
+
+    public void setLines(ArrayList<String> lines)
+    {
         this.lines = lines;
     }
 }

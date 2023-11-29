@@ -26,8 +26,6 @@ public class SeatSelectService implements INetworkService {
 
         m_netModule.writeLine("SEAT_SELECT_SERVICE");
         m_netModule.writeLine(seatNum);
-        //m_netModule.writeLine(NetworkLiteral.EOF);
-
 
         Vector<String> lines = new Vector<String>();
 
@@ -37,16 +35,12 @@ public class SeatSelectService implements INetworkService {
             lines.add(line);
         }
 
-
         String response = m_netModule.readLine();
-
 
         Message message = seatSelectHandler.obtainMessage();
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("lines", new ArrayList<>(lines));
         bundle.putString("response", response);
-
-
 
         message.setData(bundle);
         seatSelectHandler.sendMessage(message);

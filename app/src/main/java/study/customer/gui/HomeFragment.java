@@ -20,6 +20,7 @@ import com.example.mysecondproject.R;
 
 import study.customer.gui.need_home_view.CustomDatePickerDialog;
 import study.customer.gui.need_home_view.ShowSeatFragment;
+import study.customer.main.CustomerManager;
 import study.customer.main.NetworkManager;
 import study.customer.service.ReservableWeekdaySelectService;
 
@@ -42,13 +43,11 @@ public class HomeFragment extends Fragment {
     private CustomDatePickerDialog customDatePickerDialog;
     private View view;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setAppLocale("ko");
         view = inflater.inflate(R.layout.fragment_home, container, false);
         textViewDate = view.findViewById(R.id.textViewDate);
-
 
         // 오늘 날짜를 설정
         setTodayDate();
@@ -68,13 +67,12 @@ public class HomeFragment extends Fragment {
         reservableWeekdaySelectHandler = new ReservableWeekdaySelectHandler(this);
         ReservableWeekdaySelectService reservableWeekdaySelectService =
                 new ReservableWeekdaySelectService(reservableWeekdaySelectHandler, selectedDate);
-        reservableWeekdaySelectService.bindNetworkModule(IntroActivity.networkModule);
-        NetworkManager.getManager().requestService(reservableWeekdaySelectService);
+        CustomerManager.getManager().requestService(reservableWeekdaySelectService);
 
         return view;
     }
 
-    //좌석등록
+    // 좌석등록
     private void setSeatButtonClickListeners(View view) {
         int[] seatButtonIds = {
                 R.id.seat_1, R.id.seat_2, R.id.seat_3, R.id.seat_4, R.id.seat_5,
@@ -104,7 +102,6 @@ public class HomeFragment extends Fragment {
         showSeat.show(getParentFragmentManager(), "show_seat");
     }
 
-
     //지역불러오고 그에 맞는 언어설정해주기(캘린더용)
     private void setAppLocale(String languageCode) {
         Locale locale = new Locale(languageCode);
@@ -132,7 +129,6 @@ public class HomeFragment extends Fragment {
 
         textViewDate.setText("선택된 날짜 : " + selectedDate + "(" + dayOfWeekString + ")");;
     }
-
 
     // 날짜선택 다이얼로그
     private void showDatePicker() {
@@ -162,7 +158,8 @@ public class HomeFragment extends Fragment {
         customDatePickerDialog.show();
     }
 
-    public void noneRecords() {
+    public void noneRecords()
+    {
         TextView text = view.findViewById(R.id.textOnair);
         text.setText("영업일이 아닙니다.");
     }
@@ -172,12 +169,13 @@ public class HomeFragment extends Fragment {
         return daysOfWeek[dayOfWeek - 1];
     }
 
-    public void setSelectedDate(String selectedDate) {
+    public void setSelectedDate(String selectedDate)
+    {
         this.selectedDate = selectedDate;
     }
 
-    public void setDayOfWeekString(String dayOfWeekString) {
+    public void setDayOfWeekString(String dayOfWeekString)
+    {
         this.dayOfWeekString = dayOfWeekString;
     }
-
 }

@@ -19,6 +19,8 @@ import study.customer.gui.HomeFragment;
 
 import study.customer.gui.IntroActivity;
 import com.example.mysecondproject.R;
+
+import study.customer.main.CustomerManager;
 import study.customer.service.ReservableWeekdaySelectService;
 import study.customer.service.SeatSelectService;
 
@@ -60,8 +62,7 @@ public class ShowSeatFragment extends DialogFragment {
         SeatSelectHandler seatSelectHandler;
         seatSelectHandler = new SeatSelectHandler(this);
         SeatSelectService seatSelectService = new SeatSelectService(seatSelectHandler, seatNum);
-        seatSelectService.bindNetworkModule(IntroActivity.networkModule);
-        IntroActivity.networkThread.requestService(seatSelectService);
+        CustomerManager.getManager().requestService(seatSelectService);
 
         ReservableWeekdaySelectHandler reservableWeekdaySelectHandler;
         reservableWeekdaySelectHandler = new ReservableWeekdaySelectHandler(this);
@@ -81,8 +82,7 @@ public class ShowSeatFragment extends DialogFragment {
             public void onClick(View v) {
                 ReservableWeekdaySelectService reservableWeekdaySelectService =
                         new ReservableWeekdaySelectService(reservableWeekdaySelectHandler, selectedDate);
-                reservableWeekdaySelectService.bindNetworkModule(IntroActivity.networkModule);
-                IntroActivity.networkThread.requestService(reservableWeekdaySelectService);
+                CustomerManager.getManager().requestService(reservableWeekdaySelectService);
 
                 dismiss();
             }
@@ -98,10 +98,12 @@ public class ShowSeatFragment extends DialogFragment {
 
         return builder.create();
     }
+
     public void noneRecords() {
         TextView text = view.findViewById(R.id.text);
         text.setText("등록된 예약내역이 없습니다.");
     }
+
     public void updateFail() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -125,6 +127,7 @@ public class ShowSeatFragment extends DialogFragment {
         });
         dialog.show();
     }
+
     public void updateRecords(ArrayList<String> lines) {
         lines = this.lines;
         LinearLayout containerLayout = view.findViewById(R.id.recordsContainer1);

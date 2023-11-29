@@ -29,7 +29,7 @@ public class ReserveService implements INetworkService {
 
         m_netModule.writeLine("RESERVE_SERVICE");
         m_netModule.writeLine(seatNum);
-        m_netModule.writeLine(Integer.toString(CustomerManager.getManager().getUuid()));
+        m_netModule.writeLine(Integer.toString(CustomerManager.getManager().getLoginData().getUuid()));
         m_netModule.writeLine(startTime);
         m_netModule.writeLine(endTime);
         m_netModule.writeLine(NetworkLiteral.EOF);

@@ -17,6 +17,8 @@ import study.customer.gui.HomeFragment;
 import study.customer.gui.IntroActivity;
 
 import com.example.mysecondproject.R;
+
+import study.customer.main.CustomerManager;
 import study.customer.service.ReservableWeekdaySelectService;
 
 import java.text.SimpleDateFormat;
@@ -67,8 +69,7 @@ public class CustomDatePickerDialog extends Dialog {
                 listener.onDateSet(null, year, month, day);
                 ReservableWeekdaySelectService reservableWeekdaySelectService =
                         new ReservableWeekdaySelectService(reservableWeekdaySelectHandler, selectedDate);
-                reservableWeekdaySelectService.bindNetworkModule(IntroActivity.networkModule);
-                IntroActivity.networkThread.requestService(reservableWeekdaySelectService);
+                CustomerManager.getManager().requestService(reservableWeekdaySelectService);
 
                 dismiss();
             }

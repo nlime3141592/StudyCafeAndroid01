@@ -4,10 +4,11 @@ import java.net.Socket;
 
 public class ServerCon
 {
-    public static synchronized Socket tryConnectToServer()
+    public static synchronized Socket connectToServer()
     {
         //본인아이피
-        final String SERVER_IP = "113.198.236.207";
+        // final String SERVER_IP = "113.198.236.207";
+        final String SERVER_IP = "192.168.35.31";
 
         //포트
         final int SERVER_PORT = 25565;

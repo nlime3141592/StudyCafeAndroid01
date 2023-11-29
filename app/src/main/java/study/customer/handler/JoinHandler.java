@@ -30,7 +30,6 @@ public class JoinHandler extends Handler {
         Bundle bundle = message.getData();
         String response = bundle.getString("response");
 
-
         if (response.equals("<DUPLICATED_ID>")) {
             // 중복된 아이디 처리
             TextView errorTextView = joinActivity.findViewById(R.id.Error);

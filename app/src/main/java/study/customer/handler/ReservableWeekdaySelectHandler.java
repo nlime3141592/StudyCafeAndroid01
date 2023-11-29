@@ -14,6 +14,7 @@ import study.customer.gui.HomeFragment;
 import study.customer.gui.IntroActivity;
 import study.customer.gui.need_home_view.CustomDatePickerDialog;
 import study.customer.gui.need_home_view.ShowSeatFragment;
+import study.customer.main.CustomerManager;
 import study.customer.ni.INetworkModule;
 import study.customer.ni.INetworkService;
 import study.customer.ni.Service;
@@ -76,6 +77,7 @@ public class ReservableWeekdaySelectHandler extends Handler {
             //선택한날짜
             String day = bundle.getString("day");
 
+            System.out.println(String.format("반응 : %s", response));
 
             if (response.equals("<SUCCESS>")) {
                 //영업일아니고
@@ -136,8 +138,7 @@ public class ReservableWeekdaySelectHandler extends Handler {
             TextView view = showSeatFragment.getView().findViewById(R.id.error);
 
             TestService service = new TestService(view);
-            service.bindNetworkModule(IntroActivity.networkModule);
-            NetworkManager.getManager().requestService(service);
+            CustomerManager.getManager().requestService(service);
 
             // view.setText(_ex.getMessage());
         }

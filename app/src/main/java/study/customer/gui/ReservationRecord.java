@@ -7,28 +7,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.mysecondproject.R;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import customfonts.MyTextView_Poppins_Medium;
 import study.customer.handler.ReserveCancelHandler;
+import study.customer.main.CustomerManager;
 import study.customer.main.NetworkManager;
 import study.customer.service.ReserveCancelService;
 
 public class ReservationRecord extends Fragment
 {
-    private ReserveCancelHandler reserveCancelHandler;
+    private ReservationFragment reservationFragment;
+    private LinearLayout containerLayout;
     private int fragmentId;
     private int reserveId;
     private int seatId;
-    private int timeBegin;
-    private int timeEnd;
-    private String reservationDate;
+    private LocalDateTime timeBegin;
+    private LocalDateTime timeEnd;
+    private LocalDateTime reservationDate;
 
     private View recordView;
     private TextView numTextView;
@@ -40,9 +45,9 @@ public class ReservationRecord extends Fragment
     private TextView btnDelete;
     private TextView reserveIdView;
 
-    public ReservationRecord(ReserveCancelHandler _handler, ArrayList<String> _lines, int _startIndex)
+    public ReservationRecord(ReservationFragment _reservationFragment, ArrayList<String> _lines, int _startIndex)
     {
-        reserveCancelHandler = _handler;
+        reservationFragment = _reservationFragment;
 
         fragmentId = 1 + _startIndex / 5;
 
@@ -50,19 +55,17 @@ public class ReservationRecord extends Fragment
 
         seatId = Integer.parseInt(_lines.get(_startIndex + 1));
 
-        String[] timeBeginTokens = _lines.get(_startIndex + 2).split(":");
-        timeBegin = Integer.parseInt(timeBeginTokens[0]);
-
-        String[] timeEndTokens = _lines.get(_startIndex + 3).split(":");
-        timeEnd = Integer.parseInt(timeEndTokens[0]);
-
-        reservationDate = _lines.get(_startIndex + 4);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        timeBegin = LocalDateTime.parse(_lines.get(_startIndex + 2), dateTimeFormatter);
+        timeEnd = LocalDateTime.parse(_lines.get(_startIndex + 3), dateTimeFormatter);
+        reservationDate = LocalDateTime.parse(_lines.get(_startIndex + 4), dateTimeFormatter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        recordView = inflater.inflate(R.layout.record_layout_first, container, false);
+        containerLayout = reservationFragment.getView().findViewById(R.id.recordsContainer);
+        recordView = inflater.inflate(R.layout.record_layout_first, containerLayout, false);
         numTextView = recordView.findViewById(R.id.num);
         seatNumTextView = recordView.findViewById(R.id.seatNum);
         startTimeTextView = recordView.findViewById(R.id.startTime);
@@ -74,12 +77,14 @@ public class ReservationRecord extends Fragment
 
         numTextView.setText(String.valueOf(fragmentId));
         reserveIdView.setText(String.format("%d", reserveId));
-        seatNumTextView.setText(String.format("좌석 : ", seatId));
-        startTimeTextView.setText(String.format("시작 시간 : %d시", timeBegin));
-        endTimeTextView.setText(String.format("종료 시간 : %d시", timeEnd));
-        dayTextView.setText(String.format("등록한 시간\n%s", reservationDate));
+        seatNumTextView.setText(String.format("좌석 : %d", seatId));
+        startTimeTextView.setText(String.format("시작 시간 : %d시", timeBegin.getHour()));
+        endTimeTextView.setText(String.format("종료 시간 : %d시", timeEnd.getHour()));
+        dayTextView.setText(String.format("등록한 시간\n%s", reservationDate.toString()));
 
+        // 현재 layoutParams == null임.
         ViewGroup.LayoutParams layoutParams = recordView.getLayoutParams();
+
         layoutParams.height = 263;
         recordView.setLayoutParams(layoutParams);
 
@@ -97,7 +102,7 @@ public class ReservationRecord extends Fragment
             }
         });
 
-        reserveCancelHandler = new ReserveCancelHandler(this, containerLayout, recordView);
+        ReserveCancelHandler reserveCancelHandler = new ReserveCancelHandler(this.reservationFragment, this, this.recordView);
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +126,7 @@ public class ReservationRecord extends Fragment
                     @Override
                     public void onClick(View v) {
                         ReserveCancelService reserveCancelService = new ReserveCancelService(reserveCancelHandler, Integer.toString(reserveId));
-                        reserveCancelService.bindNetworkModule(NetworkManager.getManager().getNetworkModule());
-                        NetworkManager.getManager().requestService(reserveCancelService);
+                        CustomerManager.getManager().requestService(reserveCancelService);
 
                         dialog.dismiss();
                     }
@@ -139,9 +143,18 @@ public class ReservationRecord extends Fragment
         });
 
         containerLayout.addView(recordView);
-        c++;
-
         return recordView;
+    }
+
+    public void removeRecordFromView()
+    {
+        containerLayout.removeView(recordView);
+    }
+
+    public void setFragmentId(int _id)
+    {
+        fragmentId = _id;
+        numTextView.setText(String.valueOf(fragmentId));
     }
 
     private void expandView(final View view, int targetHeight) {

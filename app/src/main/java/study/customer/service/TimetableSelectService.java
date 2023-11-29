@@ -23,8 +23,6 @@ public class TimetableSelectService implements INetworkService {
     public boolean tryExecuteService() {
 
         m_netModule.writeLine("TIMETABLE_SELECT_SERVICE");
-        m_netModule.writeLine(NetworkLiteral.EOF);
-
 
         Vector<String> lines = new Vector<String>();
 
@@ -34,16 +32,12 @@ public class TimetableSelectService implements INetworkService {
             lines.add(line);
         }
 
-
         String response = m_netModule.readLine();
-
 
         Message message = timetableSelectHandler.obtainMessage();
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("lines", new ArrayList<>(lines));
         bundle.putString("response", response);
-
-
 
         message.setData(bundle);
         timetableSelectHandler.sendMessage(message);

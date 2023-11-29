@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import study.customer.handler.LoginHandler;
 import com.example.mysecondproject.R;
 
+import study.customer.main.CustomerManager;
 import study.customer.main.NetworkManager;
 import study.customer.service.LoginService;
 
@@ -69,9 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 LoginHandler loginHandler = new LoginHandler(LoginActivity.this, v);
                 LoginService loginService = new LoginService(loginHandler, account, password);
-                loginService.bindNetworkModule(IntroActivity.networkModule);
-                NetworkManager.getManager().requestService(loginService);
-
+                CustomerManager.getManager().requestService(loginService);
             }
         });
     }

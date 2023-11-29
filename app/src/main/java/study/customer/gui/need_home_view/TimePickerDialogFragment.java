@@ -19,6 +19,8 @@ import study.customer.handler.TimetableSelectHandler;
 import study.customer.gui.HomeFragment;
 import study.customer.gui.IntroActivity;
 import com.example.mysecondproject.R;
+
+import study.customer.main.CustomerManager;
 import study.customer.service.ReserveService;
 import study.customer.service.TimetableSelectService;
 
@@ -101,9 +103,7 @@ public class TimePickerDialogFragment extends DialogFragment {
         TimetableSelectHandler timetableSelectHandler;
         timetableSelectHandler = new TimetableSelectHandler(this);
         TimetableSelectService timetableSelectService = new TimetableSelectService(timetableSelectHandler);
-        timetableSelectService.bindNetworkModule(IntroActivity.networkModule);
-        IntroActivity.networkThread.requestService(timetableSelectService);
-
+        CustomerManager.getManager().requestService(timetableSelectService);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.TimePickerDialogTheme);
         builder.setTitle(seatNum + "번 좌석 시간 선택")
@@ -136,8 +136,7 @@ public class TimePickerDialogFragment extends DialogFragment {
                 }
                 seatTimeHandler = new ReserveHandler(timePickerDialogFragment, v);
                 ReserveService seatTimeService = new ReserveService(seatTimeHandler, seatNum, startTime, endTime);
-                seatTimeService.bindNetworkModule(IntroActivity.networkModule);
-                IntroActivity.networkThread.requestService(seatTimeService);
+                CustomerManager.getManager().requestService(seatTimeService);
                 showConfirmationDialog(selectedTime);
                 dismiss();
             }

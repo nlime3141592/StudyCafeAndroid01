@@ -16,7 +16,6 @@ public class InfoFragment extends Fragment {
     private String userNickname = "사용자 닉네임";
     private String userAccount = "사용자 아이디";
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -27,8 +26,8 @@ public class InfoFragment extends Fragment {
         TextView accountTextView = view.findViewById(R.id.idTextView);
 
 
-        userNickname = CustomerManager.getManager().getNickname();
-        userAccount = CustomerManager.getManager().getId();
+        userNickname = CustomerManager.getManager().getLoginData().getNickname();
+        userAccount = CustomerManager.getManager().getLoginData().getId();
         nicknameTextView.setText("닉네임 : " + userNickname);
         accountTextView.setText("아이디 : " + userAccount);
 
