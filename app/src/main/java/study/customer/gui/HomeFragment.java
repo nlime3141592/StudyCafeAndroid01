@@ -1,14 +1,12 @@
 package study.customer.gui;
 
-import android.app.DatePickerDialog;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.icu.util.Calendar;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.TextView;
 
 
@@ -19,12 +17,12 @@ import study.customer.handler.ReservableWeekdaySelectHandler;
 import com.example.mysecondproject.R;
 
 import study.customer.gui.need_home_view.CustomDatePickerDialog;
-import study.customer.gui.need_home_view.ShowSeatFragment;
+import study.customer.gui.need_home_view.SeatSummaryFragment;
 import study.customer.main.CustomerManager;
-import study.customer.main.NetworkManager;
+import study.customer.main.IResponsable;
 import study.customer.service.ReservableWeekdaySelectService;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 import customfonts.MyTextView_Poppins_Medium;
@@ -32,17 +30,8 @@ import customfonts.MyTextView_Poppins_Medium;
 public class HomeFragment extends Fragment {
     private TextView textViewDate;
     private TextView textViewOnair;
-
-    private TextView text;
-
-    private String[] seatReservedTimes;
-    private String seatNum;
-    private String uuId;
-    private String startTime;
-    private String endTime;
-    private String selectedDate;
-    private String dayOfWeekString;
-    private CustomDatePickerDialog customDatePickerDialog;
+    private String m_pickedDate;
+    private boolean m_isServiceEnabledDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,10 +39,22 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         textViewDate = view.findViewById(R.id.textViewDate);
+        textViewDate.setText("");
         textViewOnair = view.findViewById(R.id.textOnair);
+        textViewOnair.setText("");
+        textViewOnair.setTextColor(Color.RED);
 
         // 오늘 날짜를 설정
-        setTodayDate();
+        LocalDateTime now = LocalDateTime.now();
+        String nowDateString = String.format("%04d-%02d-%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        ReservableWeekdaySelectHandler handler = new ReservableWeekdaySelectHandler();
+        handler.setOnSuccess(new OnServicableCheckSuccess(nowDateString));
+        handler.setOnFailure(new OnServicableCheckFailure());
+        handler.setOnError(new OnServicableCheckFailure());
+        handler.setOnDefault(new OnServicableCheckFailure());
+        ReservableWeekdaySelectService service;
+        service = new ReservableWeekdaySelectService(handler, nowDateString);
+        CustomerManager.getManager().requestService(service);
 
         //날짜선택버튼
         MyTextView_Poppins_Medium btnDateSelect = view.findViewById(R.id.buttonLogin);
@@ -86,17 +87,25 @@ public class HomeFragment extends Fragment {
             seatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    seatNum = ((TextView) v).getText().toString();
+                    String seatNum = ((TextView) v).getText().toString();
                     showSeat(seatNum);
                 }
             });
         }
     }
 
-    public void showSeat(String seatNum){
-        ShowSeatFragment showSeat = new ShowSeatFragment(this, seatNum, startTime, endTime, selectedDate, dayOfWeekString);
+    public void showSeat(String seatNum) {
+        SeatSummaryFragment showSeat = new SeatSummaryFragment(seatNum, m_pickedDate);
         showSeat.show(getParentFragmentManager(), "show_seat");
+    }
+
+    private void updateGUI()
+    {
+        textViewDate.setText(String.format("선택한 날짜 : %s", m_pickedDate));
+        if(m_isServiceEnabledDate)
+            textViewOnair.setText("");
+        else
+            textViewOnair.setText("영업하지 않는 날짜입니다.");
     }
 
     //지역불러오고 그에 맞는 언어설정해주기(캘린더용)
@@ -109,28 +118,61 @@ public class HomeFragment extends Fragment {
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
-    //오늘날짜로 디폴트설정
-    private void setTodayDate() {
-        // 현재 날짜를 가져오기
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        String dayOfWeekString = "일월화수목금토".substring(dayOfWeek - 1, dayOfWeek);
-        String date = dateFormat.format(calendar.getTime());
-
-        textViewDate.setText(String.format("선택된 날짜 : %s (%s)", date, dayOfWeekString));
-    }
-
     // 날짜선택 다이얼로그
     private void showDatePicker() {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, 10);
-        long maxDate = calendar.getTimeInMillis();
-
-        customDatePickerDialog = new CustomDatePickerDialog(textViewDate, textViewOnair, requireContext());
-        customDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-        customDatePickerDialog.getDatePicker().setMaxDate(maxDate);
+        CustomDatePickerDialog customDatePickerDialog;
+        customDatePickerDialog = new CustomDatePickerDialog(requireContext());
+        customDatePickerDialog.setOnTimePickSuccess(new OnTimePickSuccess());
+        customDatePickerDialog.setOnTimePickFailure(new OnTimePickFailure());
         customDatePickerDialog.show();
+    }
+
+    private class OnServicableCheckSuccess implements IResponsable<Integer>
+    {
+        private String m_now;
+
+        public OnServicableCheckSuccess(String _now)
+        {
+            m_now = _now;
+        }
+
+        @Override
+        public void onResponse(Integer _serviceEnable)
+        {
+            m_pickedDate = m_now;
+            m_isServiceEnabledDate = (_serviceEnable == 1);
+            updateGUI();
+        }
+    }
+
+    private class OnServicableCheckFailure implements IResponsable
+    {
+        @Override
+        public void onResponse(Object _eventData)
+        {
+            // TODO: 인트로 액티비티로 이동하는 코드가 여기 들어옵니다.
+        }
+    }
+
+    private class OnTimePickSuccess implements IResponsable<String>
+    {
+        @Override
+        public void onResponse(String _date)
+        {
+            m_pickedDate = _date;
+            m_isServiceEnabledDate = true;
+            updateGUI();
+        }
+    }
+
+    private class OnTimePickFailure implements IResponsable<String>
+    {
+        @Override
+        public void onResponse(String _date)
+        {
+            m_pickedDate = _date;
+            m_isServiceEnabledDate = false;
+            updateGUI();
+        }
     }
 }

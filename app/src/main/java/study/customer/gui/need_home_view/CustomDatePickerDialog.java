@@ -24,37 +24,37 @@ import study.customer.main.CustomerManager;
 import study.customer.main.IResponsable;
 import study.customer.service.ReservableWeekdaySelectService;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.time.LocalDateTime;
 
 import customfonts.MyTextView_Poppins_Medium;
 
 public class CustomDatePickerDialog extends Dialog {
 
-    HomeFragment homeFragment;
-    private String selectedDate;
     private DatePicker datePicker;
     private MyTextView_Poppins_Medium buttonCancel;
     private MyTextView_Poppins_Medium buttonOk;
-    private TextView textViewDate;
-    private String dayOfWeekString;
 
-    ///////////////////////////////////
-    private TextView m_textViewDate;
-    private TextView m_textViewOnair;
     private ReservableWeekdaySelectHandler m_handler;
-    private int m_yyyy;
-    private int m_MM;
-    private int m_dd;
+    private int m_year;
+    private int m_month;
+    private int m_day;
 
-    public CustomDatePickerDialog(TextView _textViewDate, TextView _textViewOnair, @NotNull Context _context)
+    // NOTE: DatePicker에서 값을 선택할 때마다 changed 변수가 갱신됩니다.
+    private int m_changedY;
+    private int m_changedM;
+    private int m_changedD;
+
+    private IResponsable<String> m_onTimePickSuccess;
+    private IResponsable<String> m_onTimePickFailure;
+
+    public CustomDatePickerDialog(@NotNull Context _context)
     {
         super(_context);
-        m_textViewDate = _textViewDate;
-        m_textViewOnair = _textViewOnair;
         m_handler = new ReservableWeekdaySelectHandler();
-
-        m_handler.setOnSuccess(new onResponseSuccess());
+        m_handler.setOnSuccess(new onServiceSuccess());
+        m_handler.setOnFailure(new onServiceFailure());
+        m_handler.setOnError(new onServiceFailure());
+        m_handler.setOnDefault(new onServiceFailure());
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.custom_date_picker_dialog);
@@ -63,13 +63,28 @@ public class CustomDatePickerDialog extends Dialog {
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonOk = findViewById(R.id.buttonOk);
 
+        LocalDateTime time = LocalDateTime.now();
+        m_year = time.getYear();
+        m_month = time.getMonthValue();
+        m_day = time.getDayOfMonth();
+        m_changedY = m_year;
+        m_changedM = m_month;
+        m_changedD = m_day;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(m_year, m_month, m_day);
+        calendar.add(Calendar.DAY_OF_MONTH, 10);
+        long maxDate = calendar.getTimeInMillis();
+
+        datePicker.setMinDate(System.currentTimeMillis() - 1000);
+        datePicker.setMaxDate(maxDate);
+
         datePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker datePicker, int _yyyy, int _MM, int _dd)
             {
-                m_yyyy = _yyyy;
-                m_MM = _MM;
-                m_dd = _dd;
+                m_changedY = _yyyy;
+                m_changedM = _MM + 1;
+                m_changedD = _dd;
             }
         });
 
@@ -84,30 +99,44 @@ public class CustomDatePickerDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 ReservableWeekdaySelectService service;
-                service = new ReservableWeekdaySelectService(m_handler, getDateString(m_yyyy, m_MM, m_dd));
+                service = new ReservableWeekdaySelectService(m_handler, String.format("%04d-%02d-%02d", m_changedY, m_changedM, m_changedD));
                 CustomerManager.getManager().requestService(service);
-
-                dismiss();
             }
         });
     }
 
-    private class onResponseSuccess implements IResponsable<Integer>
+    public void setOnTimePickSuccess(IResponsable<String> _response)
+    {
+        m_onTimePickSuccess = _response;
+    }
+
+    public void setOnTimePickFailure(IResponsable<String> _response)
+    {
+        m_onTimePickFailure = _response;
+    }
+
+    private class onServiceSuccess implements IResponsable<Integer>
     {
         @Override
         public void onResponse(Integer _serviceEnable)
         {
-            if(_serviceEnable == 1)
+            if(_serviceEnable == 1) // Service available.
             {
-                // Service available.
+                m_year = m_changedY;
+                m_month = m_changedM;
+                m_day = m_changedD;
+
                 // 날짜 선택 완료
-                m_textViewOnair.setText("예약할 수 있는 날짜입니다.");
+                if(m_onTimePickSuccess != null)
+                    // NOTE: 선택 성공한 날짜를 전송
+                    m_onTimePickSuccess.onResponse(String.format("%04d-%02d-%02d", m_year, m_month, m_day));
+
+                dismiss();
             }
-            else if(_serviceEnable == 0)
+            else if(_serviceEnable == 0) // Service not available.
             {
-                // Service not available.
-                // 원래 updateFail() 함수에 있던 내용들
                 //경고창
+                // TODO: 경고창을 코드 분리할 수 있는지 생각해 볼 필요 있습니다.
                 AlertDialog.Builder builder = new AlertDialog.Builder(CustomDatePickerDialog.this.getContext());
 
                 View dialogView = getLayoutInflater().inflate(R.layout.fail_dialog, null);
@@ -131,38 +160,26 @@ public class CustomDatePickerDialog extends Dialog {
 
                 dialog.show();
 
-                //선택된날짜 텍스트 당일로 변경
-                String defaultDateMessage = String.format("선택된 날짜 : %s (%s)", getTodayDateString(), getDayOfWeekString());
-                m_textViewDate.setText(defaultDateMessage);
-                m_textViewOnair.setText("영업일이 아닙니다.");
+                if(m_onTimePickFailure != null)
+                    // NOTE: 선택 실패한 날짜를 전송
+                    m_onTimePickFailure.onResponse(String.format("%04d-%02d-%02d", m_changedY, m_changedM, m_changedD));
+
+                dismiss();
             }
             else
             {
                 // Occurred unknown error.
+                dismiss();
             }
         }
     }
 
-    private String getDateString(int _yyyy, int _MM, int _dd)
+    private class onServiceFailure implements IResponsable
     {
-        return String.format("%04d-%02d-%02d", _yyyy, _MM, _dd);
-    }
-
-    private String getTodayDateString()
-    {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        return dateFormat.format(calendar.getTime());
-    }
-
-    private String getDayOfWeekString()
-    {
-        Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        return "일월화수목금토".substring(dayOfWeek - 1, dayOfWeek);
-    }
-
-    public DatePicker getDatePicker() {
-        return datePicker;
+        @Override
+        public void onResponse(Object _serviceEnable)
+        {
+            // TODO: 서버와 통신 실패하였고, 인트로 액티비티로 이동하는 코드가 여기 옵니다.
+        }
     }
 }
