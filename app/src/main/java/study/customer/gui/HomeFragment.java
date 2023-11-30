@@ -31,6 +31,8 @@ import customfonts.MyTextView_Poppins_Medium;
 
 public class HomeFragment extends Fragment {
     private TextView textViewDate;
+    private TextView textViewOnair;
+
     private TextView text;
 
     private String[] seatReservedTimes;
@@ -41,13 +43,14 @@ public class HomeFragment extends Fragment {
     private String selectedDate;
     private String dayOfWeekString;
     private CustomDatePickerDialog customDatePickerDialog;
-    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setAppLocale("ko");
-        view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         textViewDate = view.findViewById(R.id.textViewDate);
+        textViewOnair = view.findViewById(R.id.textOnair);
 
         // 오늘 날짜를 설정
         setTodayDate();
@@ -62,12 +65,6 @@ public class HomeFragment extends Fragment {
         });
 
         setSeatButtonClickListeners(view);
-
-        ReservableWeekdaySelectHandler reservableWeekdaySelectHandler;
-        reservableWeekdaySelectHandler = new ReservableWeekdaySelectHandler(this);
-        ReservableWeekdaySelectService reservableWeekdaySelectService =
-                new ReservableWeekdaySelectService(reservableWeekdaySelectHandler, selectedDate);
-        CustomerManager.getManager().requestService(reservableWeekdaySelectService);
 
         return view;
     }
@@ -112,22 +109,17 @@ public class HomeFragment extends Fragment {
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
-
-    public TextView getTextViewDate() {
-        return textViewDate;
-    }
-
     //오늘날짜로 디폴트설정
-    public void setTodayDate() {
+    private void setTodayDate() {
         // 현재 날짜를 가져오기
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        selectedDate = dateFormat.format(calendar.getTime()) + " ";
 
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        dayOfWeekString = getDayOfWeekString(dayOfWeek);
+        String dayOfWeekString = "일월화수목금토".substring(dayOfWeek - 1, dayOfWeek);
+        String date = dateFormat.format(calendar.getTime());
 
-        textViewDate.setText("선택된 날짜 : " + selectedDate + "(" + dayOfWeekString + ")");;
+        textViewDate.setText(String.format("선택된 날짜 : %s (%s)", date, dayOfWeekString));
     }
 
     // 날짜선택 다이얼로그
@@ -135,47 +127,10 @@ public class HomeFragment extends Fragment {
         final Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 10);
         long maxDate = calendar.getTimeInMillis();
-        customDatePickerDialog = new CustomDatePickerDialog(this,
-                requireContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                selectedDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth + " ";
 
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                dayOfWeekString = getDayOfWeekString(dayOfWeek);
-
-                TextView textViewDate = getView().findViewById(R.id.textViewDate);
-                textViewDate.setText("선택된 날짜 : " + selectedDate + "(" + dayOfWeekString + ")");
-                customDatePickerDialog.setSelectedDate(selectedDate);
-            }
-        });
-
+        customDatePickerDialog = new CustomDatePickerDialog(textViewDate, textViewOnair, requireContext());
         customDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         customDatePickerDialog.getDatePicker().setMaxDate(maxDate);
         customDatePickerDialog.show();
-    }
-
-    public void noneRecords()
-    {
-        TextView text = view.findViewById(R.id.textOnair);
-        text.setText("영업일이 아닙니다.");
-    }
-
-    public String getDayOfWeekString(int dayOfWeek) {
-        String[] daysOfWeek = {"일", "월", "화", "수", "목", "금", "토"};
-        return daysOfWeek[dayOfWeek - 1];
-    }
-
-    public void setSelectedDate(String selectedDate)
-    {
-        this.selectedDate = selectedDate;
-    }
-
-    public void setDayOfWeekString(String dayOfWeekString)
-    {
-        this.dayOfWeekString = dayOfWeekString;
     }
 }

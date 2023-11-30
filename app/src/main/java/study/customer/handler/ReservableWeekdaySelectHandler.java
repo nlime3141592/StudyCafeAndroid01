@@ -10,55 +10,22 @@ import androidx.annotation.NonNull;
 
 import com.example.mysecondproject.R;
 
-import study.customer.gui.HomeFragment;
-import study.customer.gui.IntroActivity;
 import study.customer.gui.need_home_view.CustomDatePickerDialog;
 import study.customer.gui.need_home_view.ShowSeatFragment;
-import study.customer.main.CustomerManager;
-import study.customer.ni.INetworkModule;
-import study.customer.ni.INetworkService;
-import study.customer.ni.Service;
-import study.customer.main.NetworkManager;
-
-class TestService extends Service implements INetworkService
-{
-    private INetworkModule m_netModule;
-    private TextView m_view;
-
-    public TestService(TextView _view)
-    {
-        m_view = _view;
-    }
-
-    @Override
-    public boolean tryExecuteService()
-    {
-        String response = m_netModule.readLine();
-        m_view.setText(response);
-        return true;
-    }
-
-    @Override
-    public void bindNetworkModule(INetworkModule _netModule)
-    {
-        m_netModule = _netModule;
-        m_netModule.writeLine("TEST_SERVICE_01");
-    }
-}
+import study.customer.main.IResponsable;
 
 public class ReservableWeekdaySelectHandler extends Handler {
     CustomDatePickerDialog customDatePickerDialog;
     ShowSeatFragment showSeatFragment;
-    HomeFragment homeFragment;
 
     public ReservableWeekdaySelectHandler(CustomDatePickerDialog customDatePickerDialog) {
         super();
         this.customDatePickerDialog = customDatePickerDialog;
     }
 
-    public ReservableWeekdaySelectHandler(HomeFragment homeFragment) {
+    public ReservableWeekdaySelectHandler()
+    {
         super();
-        this.homeFragment = homeFragment;
     }
 
     public ReservableWeekdaySelectHandler(ShowSeatFragment showSeatFragment) {
@@ -84,10 +51,10 @@ public class ReservableWeekdaySelectHandler extends Handler {
                 if (serviceEnable.equals("0")) {
                     //캘린더창 연결됐을때
                     if (customDatePickerDialog != null) {
-                        //경고창
-                        customDatePickerDialog.updateFail();
+
+                        // customDatePickerDialog.updateFail();
                         //선택된날짜 텍스트 당일로 변경
-                        customDatePickerDialog.setToday();
+                        // customDatePickerDialog.setToday();
 
 
                         //홈화면 경고문변경
@@ -95,15 +62,14 @@ public class ReservableWeekdaySelectHandler extends Handler {
                         //customDatePickerDialog.noneRecords();
 
                     }
-                    //홈화면 연결됐을때
-                    else if (homeFragment != null) {
-                        //홈화면 경고문
-                        //homeFragment.noneRecords();
-                    }
                     //좌석화면 연결됐고, 예약하기 버튼을 누를 때(ShowSeatFragment안에서 경로설정)
                     else if (showSeatFragment != null) {
                         //경고창
-                        showSeatFragment.updateFail();
+                        showSeatFragment.updateFail("영업일이 아닙니다.");
+                    }
+                    else
+                    {
+                        showSeatFragment.updateFail("테스트 0");
                     }
 
                 }
@@ -114,14 +80,18 @@ public class ReservableWeekdaySelectHandler extends Handler {
                     if (customDatePickerDialog != null) {
                         //홈화면 경고문 빈칸
                         //로직 너무 꼬여서 경고문변경 보류
-                        customDatePickerDialog.onRecords();
+                        // customDatePickerDialog.onRecords();
                     }
 
                     //좌석화면 연결됐고, 예약하기 버튼 누를 때
                     if (showSeatFragment != null) {
                         //예약할 수 있는 시간대 보여주기
-
-                            showSeatFragment.showTimePickerDialog(showSeatFragment.getSeatNum());
+                        showSeatFragment.updateFail("테스트");
+                        //showSeatFragment.showTimePickerDialog(showSeatFragment.getSeatNum());
+                    }
+                    else
+                    {
+                        showSeatFragment.updateFail("테스트 1");
                     }
                 }
             } else if (response.equals("<FAILURE>")) {
@@ -132,16 +102,45 @@ public class ReservableWeekdaySelectHandler extends Handler {
                 System.out.println("그외처리");
             }
 
+            switch(response)
+            {
+                case "<SUCCESS>":
+                    if(m_onSuccess != null)
+                        m_onSuccess.onResponse(Integer.parseInt(serviceEnable));
+                    break;
+                case "<FAILURE>":
+                    if(m_onFailure != null)
+                        m_onFailure.onResponse(null);
+                    // System.out.println("N == 0");
+                    break;
+                case "<ERROR>":
+                    if(m_onError != null)
+                        m_onError.onResponse(null);
+                    // System.out.println("에러");
+                    break;
+                default:
+                    if(m_onDefault != null)
+                        m_onDefault.onResponse(null);
+                    // System.out.println("그외처리");
+                    break;
+            }
+
         }
         catch(Exception _ex)
         {
             TextView view = showSeatFragment.getView().findViewById(R.id.error);
 
-            TestService service = new TestService(view);
-            CustomerManager.getManager().requestService(service);
-
             // view.setText(_ex.getMessage());
         }
     }
 
+    private IResponsable<Integer> m_onSuccess;
+    private IResponsable m_onFailure;
+    private IResponsable m_onError;
+    private IResponsable m_onDefault;
+
+    public void setOnSuccess(IResponsable<Integer> _response) { m_onSuccess = _response; }
+    public void setOnFailure(IResponsable _response) { m_onFailure = _response; }
+    public void setOnError(IResponsable _response) { m_onError = _response; }
+    public void setOnDefault(IResponsable _response) { m_onDefault = _response; }
 }

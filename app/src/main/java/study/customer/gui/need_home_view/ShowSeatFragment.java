@@ -80,6 +80,7 @@ public class ShowSeatFragment extends DialogFragment {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ReservableWeekdaySelectService reservableWeekdaySelectService =
                         new ReservableWeekdaySelectService(reservableWeekdaySelectHandler, selectedDate);
                 CustomerManager.getManager().requestService(reservableWeekdaySelectService);
@@ -104,7 +105,7 @@ public class ShowSeatFragment extends DialogFragment {
         text.setText("등록된 예약내역이 없습니다.");
     }
 
-    public void updateFail() {
+    public void updateFail(String _message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         View dialogView = getLayoutInflater().inflate(R.layout.fail_dialog, null);
@@ -113,7 +114,7 @@ public class ShowSeatFragment extends DialogFragment {
         customfonts.MyTextView_Poppins_Medium dialogTitle = dialogView.findViewById(R.id.dialog_title);
         MyTextView_Poppins_Medium confirmButton = dialogView.findViewById(R.id.confirm_button);
 
-        dialogTitle.setText("영업일이 아닙니다.");
+        dialogTitle.setText(_message);
         confirmButton.setText("확인");
 
         AlertDialog dialog = builder.create();
