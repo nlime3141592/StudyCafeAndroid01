@@ -45,21 +45,10 @@ public class TimePickerDialogFragment extends DialogFragment {
     private String endTime;
 
     private String selectedTime;
-    private String selectedDay;
-    private int usingOnair;
-    private int startOnair;
-    private int endOnair;
-    private TimePickerDialogFragment timePickerDialogFragment;
-    private HomeFragment homeFragment;
-    private SeatSummaryFragment showSeat;
-    private ArrayList<String> lines = new ArrayList<>();
+
     List<String> timeList = new ArrayList<>();
     private View view;
     ListView timeListView;
-
-    public void setSelectedDay(String selectedDay) {
-        this.selectedDay = selectedDay;
-    }
 
     public TimePickerDialogFragment(String seatNum, String pickedDate)
     {
@@ -72,54 +61,41 @@ public class TimePickerDialogFragment extends DialogFragment {
     //나중에 서버랑 이용시간 연동해야함
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        // NOTE: Dialog 생성
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         view = inflater.inflate(R.layout.dialog_time_picker, null);
 
         timeListView = view.findViewById(R.id.timeListView);
 
-        TimetableSelectHandler handler = new TimetableSelectHandler();
-        handler.setOnServiceSuccess(new onTimetableSelectServiceSuccess());
-        TimetableSelectService service = new TimetableSelectService(handler);
-        CustomerManager.getManager().requestService(service);
+        TimetableSelectHandler tsHandler = new TimetableSelectHandler();
+        tsHandler.setOnServiceSuccess(new onTimetableSelectServiceSuccess());
+        TimetableSelectService tsService = new TimetableSelectService(tsHandler, pickedDate);
+        CustomerManager.getManager().requestService(tsService);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.TimePickerDialogTheme);
         builder.setTitle(seatNum + "번 좌석 시간 선택").setView(view);
 
+        // NOTE: 확인 버튼
         View btnOk = view.findViewById(R.id.btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReserveHandler seatTimeHandler;
                 String[] h = selectedTime.split(" ~ ");
                 String startH = h[0].replace("시", "").trim();
                 String endH = h[1].replace("시", "").trim();
-                // String day = showSeat.getSelectedDate();
-                String day = "12";
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                try {
-                    Date startDate = inputFormat.parse(day + " " + startH + ":00:00");
-                    Date endDate = inputFormat.parse(day + " " + endH + ":00:00");
-                        startTime = outputFormat.format(startDate);
-                        endTime = outputFormat.format(endDate);
-                } catch (ParseException e) {
-                        e.printStackTrace();
-                }
 
-                for (int i = 0; i < lines.size(); i += 2) {
-                    if (startTime.equals(lines.get(i))) {
-                        showReservationErrorDialog();
-                        return;
-                    }
-                }
-                seatTimeHandler = new ReserveHandler(timePickerDialogFragment, v);
-                ReserveService seatTimeService = new ReserveService(seatTimeHandler, seatNum, startTime, endTime);
-                CustomerManager.getManager().requestService(seatTimeService);
-                showConfirmationDialog(selectedTime);
-                dismiss();
+                startTime = String.format("%s %s:00:00", pickedDate, startH);
+                endTime = String.format("%s %s:00:00", pickedDate, endH);
+
+                ReserveHandler rHandler = new ReserveHandler();
+                rHandler.setOnServiceSuccess(new onReserveSuccess());
+                rHandler.setOnServiceFailure(new onReserveFailure());
+                ReserveService rService = new ReserveService(rHandler, seatNum, startTime, endTime);
+                CustomerManager.getManager().requestService(rService);
             }
         });
 
+        // NOTE: 취소 버튼
         View btnCancel = view.findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,8 +158,6 @@ public class TimePickerDialogFragment extends DialogFragment {
             }
         });
         alertDialog.show();
-
-
     }
 
     @Nullable
@@ -197,17 +171,16 @@ public class TimePickerDialogFragment extends DialogFragment {
         @Override
         public void onResponse(ArrayList<String> _lines)
         {
-            int j = 0;
-            for (int i = 0; i < _lines.size(); i += 2) {
-                if (usingOnair == j) {
-                    startOnair = Integer.parseInt(_lines.get(i));
-                    endOnair = Integer.parseInt(_lines.get(i + 1));
-                }
-                j++;
-            }
+            int startOnair = Integer.parseInt(_lines.get(0));
+            int endOnair = Integer.parseInt(_lines.get(1));
 
-            for (int hour = startOnair; hour <= endOnair - 1; hour++) {
-                timeList.add(hour + "시 ~ " + (hour+1)+"시");
+            System.out.println("line count: " + _lines.size());
+
+            for(String str : _lines)
+                System.out.println("tttttt: " + str);
+
+            for (int beg = startOnair; beg <= endOnair - 1; beg++) {
+                timeList.add(String.format("%d시 ~ %d시", beg, beg + 1));
             }
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_single_choice, timeList);
@@ -220,6 +193,26 @@ public class TimePickerDialogFragment extends DialogFragment {
                     selectedTime = adapter.getItem(position);
                 }
             });
+        }
+    }
+
+    private class onReserveSuccess implements IResponsable
+    {
+        @Override
+        public void onResponse(Object _nullArg)
+        {
+            showConfirmationDialog(selectedTime);
+            dismiss();
+        }
+    }
+
+    private class onReserveFailure implements IResponsable
+    {
+        @Override
+        public void onResponse(Object _nullArg)
+        {
+            showReservationErrorDialog();
+            dismiss();
         }
     }
 }

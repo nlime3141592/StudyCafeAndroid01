@@ -1,30 +1,25 @@
 package study.customer.gui.need_home_view;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.icu.util.Calendar;
 import android.view.View;
 import android.view.Window;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import study.customer.handler.ReservableWeekdaySelectHandler;
-import study.customer.gui.HomeFragment;
-import study.customer.gui.IntroActivity;
 
 import com.example.mysecondproject.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Calendar;
+
 import study.customer.main.CustomerManager;
 import study.customer.main.IResponsable;
+import study.customer.main.LocaleManager;
 import study.customer.service.ReservableWeekdaySelectService;
-
-import java.time.LocalDateTime;
 
 import customfonts.MyTextView_Poppins_Medium;
 
@@ -63,20 +58,16 @@ public class CustomDatePickerDialog extends Dialog {
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonOk = findViewById(R.id.buttonOk);
 
-        LocalDateTime time = LocalDateTime.now();
-        m_year = time.getYear();
-        m_month = time.getMonthValue();
-        m_day = time.getDayOfMonth();
+        Calendar calendar = LocaleManager.getCalendar();
+        m_year = calendar.get(Calendar.YEAR);
+        m_month = calendar.get(Calendar.MONTH) + 1;
+        m_day = calendar.get(Calendar.DAY_OF_MONTH);
         m_changedY = m_year;
         m_changedM = m_month;
         m_changedD = m_day;
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(m_year, m_month, m_day);
+        datePicker.setMinDate(calendar.getTimeInMillis());
         calendar.add(Calendar.DAY_OF_MONTH, 10);
-        long maxDate = calendar.getTimeInMillis();
-
-        datePicker.setMinDate(System.currentTimeMillis() - 1000);
-        datePicker.setMaxDate(maxDate);
+        datePicker.setMaxDate(calendar.getTimeInMillis());
 
         datePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
             @Override

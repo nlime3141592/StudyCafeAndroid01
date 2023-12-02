@@ -13,16 +13,19 @@ import java.util.Vector;
 
 public class TimetableSelectService implements INetworkService {
     private INetworkModule m_netModule;
-    TimetableSelectHandler timetableSelectHandler;
+    private TimetableSelectHandler timetableSelectHandler;
+    private String m_pickedDate;
 
-    public TimetableSelectService(TimetableSelectHandler timetableSelectHandler) {
+    public TimetableSelectService(TimetableSelectHandler timetableSelectHandler, String _pickedDate) {
         this.timetableSelectHandler = timetableSelectHandler;
+        m_pickedDate = _pickedDate;
     }
 
     @Override
     public boolean tryExecuteService() {
 
         m_netModule.writeLine("TIMETABLE_SELECT_SERVICE");
+        m_netModule.writeLine(m_pickedDate);
 
         Vector<String> lines = new Vector<String>();
 

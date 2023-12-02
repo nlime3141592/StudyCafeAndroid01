@@ -20,6 +20,7 @@ import study.customer.gui.need_home_view.CustomDatePickerDialog;
 import study.customer.gui.need_home_view.SeatSummaryFragment;
 import study.customer.main.CustomerManager;
 import study.customer.main.IResponsable;
+import study.customer.main.LocaleManager;
 import study.customer.service.ReservableWeekdaySelectService;
 
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setAppLocale("ko");
+        LocaleManager.setLocale("ko");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         textViewDate = view.findViewById(R.id.textViewDate);
@@ -106,16 +107,6 @@ public class HomeFragment extends Fragment {
             textViewOnair.setText("");
         else
             textViewOnair.setText("영업하지 않는 날짜입니다.");
-    }
-
-    //지역불러오고 그에 맞는 언어설정해주기(캘린더용)
-    private void setAppLocale(String languageCode) {
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Resources resources = getResources();
-        Configuration configuration = resources.getConfiguration();
-        configuration.setLocale(locale);
-        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
     // 날짜선택 다이얼로그

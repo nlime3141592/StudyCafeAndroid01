@@ -11,14 +11,14 @@ import study.customer.ni.NetworkLiteral;
 
 
 public class ReserveService implements INetworkService {
-    ReserveHandler seatTimeHandler;
     private INetworkModule m_netModule;
+    private ReserveHandler handler;
     private String seatNum;
     private String startTime;
     private String endTime;
 
-    public ReserveService(ReserveHandler seatTimeHandler, String seatNum, String startTime, String endTime) {
-        this.seatTimeHandler = seatTimeHandler;
+    public ReserveService(ReserveHandler _handler, String seatNum, String startTime, String endTime) {
+        this.handler = _handler;
         this.seatNum = seatNum;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -36,12 +36,12 @@ public class ReserveService implements INetworkService {
 
         String response = m_netModule.readLine();
 
-        Message message = seatTimeHandler.obtainMessage();
+        Message message = handler.obtainMessage();
         Bundle bundle = new Bundle();
         bundle.putString("response", response);
 
         message.setData(bundle);
-        seatTimeHandler.sendMessage(message);
+        handler.sendMessage(message);
         return true;
     }
 
